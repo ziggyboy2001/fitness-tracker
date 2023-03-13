@@ -25,7 +25,9 @@ async function createUser({ username, password }) {
 
 async function getUser({ username, password }) {
   try {
-    const { rows: [user] } = await client.query(
+    const {
+      rows: [user],
+    } = await client.query(
       `
       SELECT * FROM users 
       WHERE username = $1;
@@ -44,7 +46,9 @@ async function getUser({ username, password }) {
 
 async function getUserById(userId) {
   try {
-    const { rows: [user] } = await client.query(
+    const {
+      rows: [user],
+    } = await client.query(
       `
       SELECT * FROM users
       WHERE id=${userId};
