@@ -1,4 +1,5 @@
 const client = require("./client");
+const {attachActivitiesToRoutines} = require("./activities");
 
 async function createRoutine({ creatorId, isPublic, name, goal }) {
   try {
@@ -30,7 +31,6 @@ async function getRoutineById(id) {
       `,
       [id]
     );
-    console.log("!!!", id);
 
     return routine;
   } catch (error) {
@@ -46,16 +46,16 @@ async function getRoutinesWithoutActivities() {}
 
 async function getAllRoutines() {
   try {
-    const { rows: routineId } = await client.query(
+    const { rows } = await client.query(
       `
-      SELECT id
-      FROM routines;
+      SELECT routines.*,
+      users.username AS "creatorName"
+      FROM routines
+      JOIN users ON routines."creatorId" = users.id
+          
       `
     );
-    const routine = await Promise.all(
-      routineId.map((routine) => getRoutineById(routine.id))
-    );
-    return routine;
+    return attachActivitiesToRoutines (rows);
   } catch (error) {
     console.log(error);
     throw error;
