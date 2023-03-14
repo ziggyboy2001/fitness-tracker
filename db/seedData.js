@@ -7,7 +7,7 @@ const {
   getAllActivities,
   addActivityToRoutine,
 } = require("./");
-const client  = require("./client");
+const client = require("./client");
 
 async function dropTables() {
   try {
@@ -53,8 +53,9 @@ async function createTables() {
     );
     CREATE TABLE routine_activities(
       id SERIAL PRIMARY KEY,
-      "routineId" INTEGER REFERENCES routines ( id ) UNIQUE NOT NULL,
-      "activityId" INTEGER REFERENCES activities ( id ) UNIQUE NOT NULL,
+      "routineId" INTEGER REFERENCES routines ( id ),
+      "activityId" INTEGER REFERENCES activities ( id ),
+     UNIQUE("routineId", "activityId"),
       duration INTEGER,
       count INTEGER
     );
