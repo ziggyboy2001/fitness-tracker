@@ -24,16 +24,16 @@ async function createActivity({ name, description }) {
 async function getAllActivities() {
   // select and return an array of all activities
   try {
-    const { rows: postIds } = await client.query(
+    const { rows: activityIds } = await client.query(
       `
       SELECT id
       FROM activities;
       `
     );
-    const posts = await Promise.all(
-      postIds.map((post) => getPostById(post.id))
+    const activity = await Promise.all(
+      activityIds.map((activity) => getActivityById(activity.id))
     );
-    return posts;
+    return activity;
   } catch (error) {
     console.log(error);
     throw error;
@@ -64,7 +64,29 @@ async function getActivityById(id) {
   }
 }
 
-async function getActivityByName(name) {}
+async function getActivityByName(name) {
+  try {
+    const {
+      rows: [activity],
+    } = await client.query(
+      `
+      SELECT * 
+      FROM activities
+      WHERE name = $1;
+      `,
+      [name]
+    );
+    console.log("!!!", name);
+
+    return activity;
+  } catch (error) {
+    console.log(error);
+    throw {
+      name: "ActivityNotFoundError",
+      message: "Could not find activity with id given",
+    };
+  }
+}
 
 // used as a helper inside db/routines.js
 async function attachActivitiesToRoutines(routines) {}
@@ -73,6 +95,27 @@ async function updateActivity({ id, ...fields }) {
   // don't try to update the id
   // do update the name and description
   // return the updated activity
+  const setString = Object.keys(fields)
+    .map((key, index) => `"${key}"=$${index + 1}`)
+    .join(", ");
+  try {
+    if (setString.length > 0) {
+      await client.query(
+        `
+            UPDATE activities
+            SET ${setString}
+            WHERE id=${id}
+            RETURNING *;
+          `,
+        Object.values(fields)
+      );
+    }
+
+    return await getActivityById(id);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 }
 
 module.exports = {

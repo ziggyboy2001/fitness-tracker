@@ -49,7 +49,7 @@ describe("DB Activities", () => {
   });
 
   describe("getActivityByName", () => {
-    xit("Gets an activity by it's name", async () => {
+    it("Gets an activity by it's name", async () => {
       const fakeActivity = await createFakeActivity(
         "Power Walking",
         "At the mall"
