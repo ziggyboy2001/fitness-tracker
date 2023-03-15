@@ -177,6 +177,7 @@ async function destroyRoutine(id) {
       `,
       [id]
     );
+
     return rows;
   } catch (error) {
     console.log(error);
