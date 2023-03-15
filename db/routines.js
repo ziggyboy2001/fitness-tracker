@@ -1,6 +1,6 @@
 const client = require("./client");
 const { attachActivitiesToRoutines } = require("./activities");
-
+// console.log("HELLO")
 async function createRoutine({ creatorId, isPublic, name, goal }) {
   try {
     const {
