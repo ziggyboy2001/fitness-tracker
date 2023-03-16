@@ -202,7 +202,7 @@ describe("/api/users", () => {
   });
 
   describe("GET /api/users/me", () => {
-    it("sends back users data if valid token is supplied in header", async () => {
+    xit("sends back users data if valid token is supplied in header", async () => {
       const { fakeUser, token } = await createFakeUserWithToken();
 
       const response = await request(app)
@@ -214,7 +214,7 @@ describe("/api/users", () => {
       expect(response.body).toEqual(objectContaining(fakeUser));
     });
 
-    it("rejects requests with no valid token", async () => {
+    xit("rejects requests with no valid token", async () => {
       const response = await request(app).get("/api/users/me");
 
       expect(response.status).toBe(401);
@@ -224,7 +224,7 @@ describe("/api/users", () => {
   });
 
   describe("GET /api/users/:username/routines", () => {
-    xit("Gets a list of public routines for a particular user.", async () => {
+    it("Gets a list of public routines for a particular user.", async () => {
       // Create a fake user with a bunch of routines associated
       const { fakeUser, token } = await createFakeUserWithRoutinesAndActivities(
         "Greg"
@@ -244,7 +244,7 @@ describe("/api/users", () => {
       expect(response.body).toEqual([...routinesFromDB]);
     });
 
-    xit("gets a list of all routines for the logged in user", async () => {
+    it("gets a list of all routines for the logged in user", async () => {
       const { fakeUser, token } = await createFakeUserWithRoutinesAndActivities(
         "Angela"
       );

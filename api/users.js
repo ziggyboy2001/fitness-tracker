@@ -1,6 +1,11 @@
 /* eslint-disable no-useless-catch */
 const express = require("express");
-const { getUserByUsername, createUser } = require("../db");
+const {
+  getUserByUsername,
+  createUser,
+  getAllRoutinesByUser,
+  getPublicRoutinesByUser,
+} = require("../db");
 const { requireUser } = require("./utils");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
@@ -93,5 +98,28 @@ router.get("/me", requireUser, async (req, res, next) => {
   }
 });
 // GET /api/users/:username/routines
+router.get("/:username/routines", requireUser, async (req, res, next) => {
+  let { username } = req.params;
+  try {
+    const userObject = await getUserByUsername(username);
+    console.log(userObject, "USEROBJECT");
+    if (!userObject) {
+      next({
+        name: "UserDoesNotExist",
+        message: `User: ${username} Does Not Exist.`,
+      });
+    } else if (req.user && userObject.id === req.user.id) {
+      const allRoutines = await getAllRoutinesByUser({ username });
+
+      res.send(allRoutines);
+    } else {
+      const publicRoutines = await getPublicRoutinesByUser({ username });
+
+      res.send(publicRoutines);
+    }
+  } catch ({ name, message }) {
+    next({ name, message });
+  }
+});
 
 module.exports = router;
