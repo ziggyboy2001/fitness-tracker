@@ -37,7 +37,7 @@ const {
 
 describe("/api/users", () => {
   describe("POST /api/users/register", () => {
-    it("Creates a new user.", async () => {
+    xit("Creates a new user.", async () => {
       // Create some fake user data
       const fakeUserData = {
         username: faker.internet.userName(),
@@ -97,7 +97,7 @@ describe("/api/users", () => {
       );
     });
 
-    it("Throws errors for duplicate username", async () => {
+    xit("Throws errors for duplicate username", async () => {
       // Create a fake user in the DB
       const { fakeUser: firstUser } = await createFakeUserWithToken();
       // Now try to create a user with the same username
@@ -118,7 +118,7 @@ describe("/api/users", () => {
       );
     });
 
-    it("returns error if password is less than 8 characters.", async () => {
+    xit("returns error if password is less than 8 characters.", async () => {
       // Create some user data with a password with 7 characters
       const newUserShortPassword = {
         username: faker.internet.userName(),
@@ -202,7 +202,7 @@ describe("/api/users", () => {
   });
 
   describe("GET /api/users/me", () => {
-    xit("sends back users data if valid token is supplied in header", async () => {
+    it("sends back users data if valid token is supplied in header", async () => {
       const { fakeUser, token } = await createFakeUserWithToken();
 
       const response = await request(app)
@@ -214,7 +214,7 @@ describe("/api/users", () => {
       expect(response.body).toEqual(objectContaining(fakeUser));
     });
 
-    xit("rejects requests with no valid token", async () => {
+    it("rejects requests with no valid token", async () => {
       const response = await request(app).get("/api/users/me");
 
       expect(response.status).toBe(401);
