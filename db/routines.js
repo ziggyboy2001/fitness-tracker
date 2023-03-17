@@ -129,9 +129,6 @@ async function getPublicRoutinesByUser({ username }) {
       JOIN users ON routines."creatorId" = users.id
       WHERE username = $1
       AND "isPublic" = true
-      
-
-          
       `,
       [username]
     );
