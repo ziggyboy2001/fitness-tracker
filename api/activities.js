@@ -35,8 +35,10 @@ router.post("/", requireUser, async (req, res, next) => {
       next({ name: "PostCreationError", message: "Error creating post." });
     }
   } catch ({ name, message }) {
-    next({ name, message: "An activity with name Push Ups already exists" });
-    console.log(message, "!@#$%MESSAGE");
+    next({
+      name,
+      message: `An activity with name ${postData.name} already exists`,
+    });
   }
 });
 // PATCH /api/activities/:activityId
