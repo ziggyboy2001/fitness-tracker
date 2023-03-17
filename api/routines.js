@@ -80,7 +80,34 @@ router.patch("/:routineId", requireUser, async (req, res, next) => {
   }
 });
 // DELETE /api/routines/:routineId
+router.delete("/:routineId", requireUser, async (req, res, next) => {
+  try {
+    const routine = await getRoutineById(req.params.routineId);
 
+    console.log(routine, "!#$%@#$%@#$%&@#%$#@&$%@#&");
+    if (routine && routine.id === req.user.id) {
+      const updatedRoutine = await updateRoutine(routine.id, { active: false });
+
+      res.send({ routine: updatedRoutine });
+    } else {
+      res.status(403);
+      // if there was a routine, throw UnauthorizedUserError, otherwise throw routineNotFoundError
+      next(
+        routine
+          ? {
+              name: "UnauthorizedUserError",
+              message: `User ${req.user.username} is not allowed to delete ${routine.name}`,
+            }
+          : {
+              name: "PostNotFoundError",
+              message: "That post does not exist",
+            }
+      );
+    }
+  } catch ({ name, message }) {
+    next({ name, message });
+  }
+});
 // POST /api/routines/:routineId/activities
 
 module.exports = router;
