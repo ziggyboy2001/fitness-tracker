@@ -5,9 +5,6 @@ const {
   createActivity,
   updateActivity,
   getActivityById,
-  getAllRoutinesByUser,
-  getPublicRoutinesByUser,
-  getPublicRoutinesByActivity,
   getAllPublicRoutines,
 } = require("../db");
 const { requireUser } = require("./utils");
