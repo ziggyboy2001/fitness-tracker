@@ -1,29 +1,44 @@
 const express = require("express");
 const router = express.Router();
-const { getAllActivities } = require("../db");
+const { getAllActivities, createActivity } = require("../db");
 const { requireUser } = require("./utils");
 // GET /api/activities/:activityId/routines
+
+// GET /api/activities
 router.get("/", async (req, res, next) => {
   try {
     const allActivities = await getAllActivities();
     const activities = allActivities.filter((activity) => {
-      if (activity.id) {
-        return activity.id || (req.user && activity.id === req.user.id);
-      }
-      console.log(activity.id, "1234ACTIVITIES");
+      return activity;
     });
 
-    res.send({
-      activities,
-    });
+    res.send(activities);
   } catch ({ name, message }) {
     next({ name, message });
   }
 });
-// GET /api/activities
-
 // POST /api/activities
+router.post("/", requireUser, async (req, res, next) => {
+  const { name, description = "" } = req.body;
 
+  const postData = {
+    authorId: req.user.id,
+    name,
+    description,
+  };
+
+  try {
+    const post = await createActivity(postData);
+    if (post) {
+      res.send(post);
+    } else {
+      next({ name: "PostCreationError", message: "Error creating post." });
+    }
+  } catch ({ name, message }) {
+    next({ name, message: "An activity with name Push Ups already exists" });
+    console.log(message, "!@#$%MESSAGE");
+  }
+});
 // PATCH /api/activities/:activityId
 
 module.exports = router;
