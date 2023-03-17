@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getAllActivities, createActivity } = require("../db");
+const { getAllActivities, createActivity, updateActivity, getActivityById } = require("../db");
 const { requireUser } = require("./utils");
 // GET /api/activities/:activityId/routines
 
@@ -41,6 +41,30 @@ router.post("/", requireUser, async (req, res, next) => {
     });
   }
 });
+
 // PATCH /api/activities/:activityId
+router.patch("/:activityId", requireUser, async (req, res, next) => {
+  try{
+    const { activityId } = req.params;
+  const getActivityId = await getActivityById(activityId)
+  if (!getActivityId) {
+    next({
+      name: "not found",
+      message: `Activity ${activityId} not found`
+    })
+  }else {
+    const { name, description } = req.body;
+    try{
+    const updatedActivity = await updateActivity({id: activityId, name, description});
+    res.send(updatedActivity)
+  }catch (error){
+      next({ name: "", message: `An activity with name ${name} already exists` });
+      console.log(error)
+    }
+  } 
+  }catch (error){
+    console.log(error)
+  }
+});
 
 module.exports = router;
