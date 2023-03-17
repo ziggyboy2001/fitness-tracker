@@ -1,5 +1,10 @@
 const express = require("express");
-const { getAllPublicRoutines, createRoutine } = require("../db");
+const {
+  getAllPublicRoutines,
+  createRoutine,
+  updateRoutine,
+  getRoutineById,
+} = require("../db");
 const router = express.Router();
 const { requireUser } = require("./utils");
 
@@ -43,7 +48,37 @@ router.post("/", requireUser, async (req, res, next) => {
   }
 });
 // PATCH /api/routines/:routineId
-
+router.patch("/:routineId", requireUser, async (req, res, next) => {
+  try {
+    const { routineId } = req.params;
+    const routineObject = await getRoutineById(routineId);
+    if (!routineObject) {
+      next({
+        name: "not found",
+        message: `Activity ${routineId} not found`,
+      });
+    } else {
+      const { name, goal, isPublic } = req.body;
+      if (req.user.id !== routineObject.creatorId) {
+        res.status(403);
+        next({
+          name: "Unauthorized",
+          message: `User ${req.user.username} is not allowed to update ${routineObject.name}`,
+        });
+      } else {
+        const updatedRoutine = await updateRoutine({
+          id: routineId,
+          isPublic,
+          name,
+          goal,
+        });
+        res.send(updatedRoutine);
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
 // DELETE /api/routines/:routineId
 
 // POST /api/routines/:routineId/activities

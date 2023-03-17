@@ -101,7 +101,7 @@ describe("/api/routines", () => {
   });
 
   describe("PATCH /api/routines/:routineId (**)", () => {
-    xit("Updates a routine, notably changing public/private, the name, and the goal", async () => {
+    it("Updates a routine, notably changing public/private, the name, and the goal", async () => {
       const { fakeUser, token } = await createFakeUserWithToken("Bradley");
       // Create a routine so we can update it.
       const routine = await createFakePublicRoutine(
@@ -126,7 +126,7 @@ describe("/api/routines", () => {
       expect(response.body).toMatchObject(newRoutineData);
     });
 
-    xit("Requires logged in user", async () => {
+    it("Requires logged in user", async () => {
       // Create a routine so we can update it.
       const { fakeUser } = await createFakeUserWithToken("Jefferson");
       const fakeRoutine = createFakePublicRoutine(
@@ -148,7 +148,7 @@ describe("/api/routines", () => {
       expectToHaveErrorMessage(response.body, UnauthorizedError());
     });
 
-    xit("returns a 403 when a user tries to edit a routine that is not theirs", async () => {
+    it("returns a 403 when a user tries to edit a routine that is not theirs", async () => {
       const { fakeUser } = await createFakeUserWithToken("Marques");
       const { fakeUser: anotherUser, token: anotherUsersToken } =
         await createFakeUserWithToken("Mandy");
