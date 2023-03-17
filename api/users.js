@@ -102,7 +102,6 @@ router.get("/:username/routines", requireUser, async (req, res, next) => {
   let { username } = req.params;
   try {
     const userObject = await getUserByUsername(username);
-    console.log(userObject, "USEROBJECT");
     if (!userObject) {
       next({
         name: "UserDoesNotExist",
