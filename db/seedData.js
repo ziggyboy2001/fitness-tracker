@@ -57,7 +57,7 @@ async function createTables() {
       "activityId" INTEGER REFERENCES activities ( id ),
      UNIQUE("routineId", "activityId"),
       duration INTEGER,
-      count INTEGER,
+      count INTEGER
     );
     `);
 
