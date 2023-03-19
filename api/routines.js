@@ -3,6 +3,7 @@ const {
   getAllPublicRoutines,
   createRoutine,
   updateRoutine,
+  destroyRoutine,
   getRoutineById,
 } = require("../db");
 const router = express.Router();
@@ -80,15 +81,16 @@ router.patch("/:routineId", requireUser, async (req, res, next) => {
   }
 });
 // DELETE /api/routines/:routineId
+
 router.delete("/:routineId", requireUser, async (req, res, next) => {
   try {
-    const routine = await getRoutineById(req.params.routineId);
+    const { routineId } = req.params;
+    const routine = await getRoutineById(routineId);
 
-    console.log(routine, "!#$%@#$%@#$%&@#%$#@&$%@#&");
-    if (routine && routine.id === req.user.id) {
-      const updatedRoutine = await updateRoutine(routine.id, { active: false });
+    if (routine && routine.creatorId === req.user.id) {
+      await destroyRoutine(routineId);
 
-      res.send({ routine: updatedRoutine });
+      res.send(routine);
     } else {
       res.status(403);
       // if there was a routine, throw UnauthorizedUserError, otherwise throw routineNotFoundError
@@ -99,8 +101,8 @@ router.delete("/:routineId", requireUser, async (req, res, next) => {
               message: `User ${req.user.username} is not allowed to delete ${routine.name}`,
             }
           : {
-              name: "PostNotFoundError",
-              message: "That post does not exist",
+              name: "RoutineNotFoundError",
+              message: `User ${req.user.username} is not allowed to delete ${routine.name}`,
             }
       );
     }
@@ -108,6 +110,7 @@ router.delete("/:routineId", requireUser, async (req, res, next) => {
     next({ name, message });
   }
 });
+
 // POST /api/routines/:routineId/activities
 
 module.exports = router;
