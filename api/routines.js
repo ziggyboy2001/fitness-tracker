@@ -95,7 +95,6 @@ router.delete("/:routineId", requireUser, async (req, res, next) => {
       res.send(routine);
     } else {
       res.status(403);
-      // if there was a routine, throw UnauthorizedUserError, otherwise throw routineNotFoundError
       next(
         routine
           ? {
@@ -114,14 +113,13 @@ router.delete("/:routineId", requireUser, async (req, res, next) => {
 });
 
 // POST /api/routines/:routineId/activities
-router.post("/:routineId/activities", async (req, res, next) => {
+router.post("/:routineId/activities", requireUser, async (req, res, next) => {
   const routineId = req.params.routineId;
   try {
     const _routine = await getRoutineById(routineId);
 
     if (!_routine) {
       next({
-        error: "RoutineNotFoundError",
         name: "RoutineNotFoundError",
         message: `Routine ${routineId} not found`,
       });
@@ -130,8 +128,8 @@ router.post("/:routineId/activities", async (req, res, next) => {
     if (_routine.creatorId !== req.user.id) {
       res.status(401);
       next({
-        message: " ",
         name: "UnauthorizedError",
+        message: " ",
       });
     }
 
