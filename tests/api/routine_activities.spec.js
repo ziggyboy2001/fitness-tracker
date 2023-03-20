@@ -97,7 +97,7 @@ describe("/api/routine_activities", () => {
   });
 
   describe("DELETE /api/routine_activities/:routineActivityId (**)", () => {
-    xit("Removes an activity from a routine, uses hard delete", async () => {
+    it("Removes an activity from a routine, uses hard delete", async () => {
       const { fakeUser, token } = await createFakeUserWithToken("Linus");
       const fakeRoutine = await createFakePublicRoutine(
         fakeUser.id,
@@ -124,7 +124,7 @@ describe("/api/routine_activities", () => {
       );
     });
 
-    xit("Logged in user should be the owner of the modified object.", async () => {
+    it("Logged in user should be the owner of the modified object.", async () => {
       const { fakeUser } = await createFakeUserWithToken("Lucy");
 
       const fakeRoutine = await createFakePublicRoutine(
